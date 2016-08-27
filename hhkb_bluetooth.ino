@@ -1,5 +1,14 @@
 #include <hidboot.h>
 #include <usbhub.h>
+#include "DHT.h"
+#include "U8glib.h"
+
+#define DHTPIN 2
+#define DHTTYPE DHT11 
+
+
+DHT dht(DHTPIN, DHTTYPE);
+U8GLIB_SSD1306_128X64 u8g(10, 11, 13, 12);  
 
 uint8_t CurrentReport[12] = {0x0C, 0x00, 0xA1, 0x01, 0x00, 0x00,
                       0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
@@ -64,13 +73,22 @@ KbdRptParser Prs;
 
 void setup()
 {
+  
+  // assign default color value
+  if ( u8g.getMode() == U8G_MODE_R3G3B2 ) 
+    u8g.setColorIndex(255);     // white
+  else if ( u8g.getMode() == U8G_MODE_GRAY2BIT )
+    u8g.setColorIndex(3);         // max intensity
+  else if ( u8g.getMode() == U8G_MODE_BW )
+    u8g.setColorIndex(1);         // pixel on
+
   Serial.begin( 9600 );
 #if !defined(__MIPSEL__)
   while (!Serial); // Wait for serial port to connect - used on Leonardo, Teensy and other boards with built-in USB CDC serial connection
 #endif
-
-  if (Usb.Init() == -1)
-    Serial.println("OSC did not start.");
+  
+  //if (Usb.Init() == -1)
+    //Serial.println("OSC did not start.");
 
   delay( 200 );
 
@@ -79,7 +97,27 @@ void setup()
   HidKeyboard.SetReportParser(0, (HIDReportParser*)&Prs);
 }
 
+void draw(void) {
+  float h = dht.readHumidity();
+  float t = dht.readTemperature();
+  
+  // graphic commands to redraw the complete screen should be placed here  
+  u8g.setFont(u8g_font_unifont);
+  //u8g.setFont(u8g_font_osb21);
+  u8g.setPrintPos(2, 10);
+  u8g.print("temp: " + String(h));
+  u8g.setPrintPos(2, 30);
+  u8g.print("humidity:" + String(t));
+}
+
 void loop()
 {
+  
+  u8g.firstPage();  
+  do {
+    draw();
+  } while( u8g.nextPage() );
+  
   Usb.Task();
 }
+
