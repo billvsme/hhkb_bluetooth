@@ -1,6 +1,7 @@
 #include <hidboot.h>
 #include <usbhub.h>
 
+
 uint8_t CurrentReport[12] = {0x0C, 0x00, 0xA1, 0x01, 0x00, 0x00,
                       0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
 uint8_t UpReport[12] = {0x0C, 0x00, 0xA1, 0x01, 0x00, 0x00,
@@ -10,12 +11,12 @@ uint8_t KeyOemToXm(uint8_t key) {
   return key;
 };
 
-uint8_t ModeOemToXm(uint8_t mod) {
+uint8_t ModOemToXm(uint8_t mod) {
   return mod;
 };
 
 uint8_t* BTHidReport(uint8_t mod, uint8_t key) {  
-  CurrentReport[4] = ModeOemToXm(mod);
+  CurrentReport[4] = ModOemToXm(mod);
   CurrentReport[7] = KeyOemToXm(key);
   return CurrentReport;
 };
