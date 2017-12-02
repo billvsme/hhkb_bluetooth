@@ -11,6 +11,8 @@ hhkb 蓝牙改造项目，本着尽量简单，少改动，少焊接，可以恢
 
 **连接图**  
 **效果图**  
+![hhkb_buletooth_01](https://raw.githubusercontent.com/billvsme/hhkb_bluetooth/master/images/hhkb_buletooth_01.jpg)
+
 
 正常连接后，写入运行即可，是不是非常简单 😂,但是只是相当于做了一个蓝牙转化器。可以一步一步来。
 
